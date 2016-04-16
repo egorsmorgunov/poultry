@@ -17,7 +17,8 @@ function initSession(&$e,$pdo) {
 	session_start();
 	if(!isset($_SESSION['id']) && isset($_COOKIE['id'])) {
 		$stmt = $pdo->prepare("select id from users where unique_id = ?");
-		$stmt->execute([$_COOKIE['id']]);
+		$cookie[0] = $_COOKIE['id']
+		$stmt->execute();
 		$row_count = $stmt->rowCount();
 		
 		if($row_count == 1) {
@@ -33,16 +34,17 @@ function initSession(&$e,$pdo) {
 
 function getUserLevel($pdo) {
 	if(isset($_SESSION['id'])) {
-		$data = [$_SESSION, 'id'];
+		$data[1] = $_SESSION['id'];
 	}
 	elseif(isset($_COOKIE['id'])) {
-		$data = [$_COOKIE, 'unique_id'];
+		$data[1] = $_COOKIE['unique_id'];
 	}
 	else $data = false;
 	
 	if($data) {
 		$stmt = $pdo->prepare("select level from users where {$data[1]} = ?");
-		$stmt->execute([$data[0]['id']]);
+		$dataa[0] = $data[0]['id'];
+		$stmt->execute($dataa);
 		$row_count = $stmt->rowCount();
 		
 		if($row_count == 1) {
