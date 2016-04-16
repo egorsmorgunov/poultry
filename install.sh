@@ -23,7 +23,7 @@ I=$( mkdir /home/poultry 2>/dev/null)
 					git init
 					git pull https://github.com/egorsmorgunov/poultry.git
 					echo "git was installed nice and pulled"
-					#если не установилась то выдать ошибку и прекратить скрипт
+					#если не установилась то выдать ошибку и прекратить скрипт  
 				else
 					echo "git: network down"
 					exit 1
