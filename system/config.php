@@ -2,9 +2,9 @@
 
 //database parameters
 $dbHost			= "localhost";
-$dbName			= "poultry";
-$dbUser			= "poultry";
-$dbPassword		= "poultry";
+$dbName			= "poultry_farm";
+$dbUser			= "furri";
+$dbPassword		= "mortal";
 $dbCharset		= "UTF8";
 
 //init errors variable

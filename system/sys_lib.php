@@ -35,7 +35,7 @@ function initSession(&$e,$pdo) {
 function getUserLevel($pdo)
 {
  if(isset($_SESSION['id']))
-	 {
+  {
   $data[1] = $_SESSION['id'];
  }
  elseif(isset($_COOKIE['id']))
@@ -83,7 +83,7 @@ function setDefaultModule($userLevel) {
 }
 
 function displayError($errors) {
-	if($errors) {
+	if(is_array($errors)) {
 		foreach ($errors as $err) {
 			echo "<div class=\"error\">{$err}</div>";
 		}
@@ -96,23 +96,7 @@ $menu[99][] = array ("users" , "Пользователи");
 	$menu[1][] = array("eggs" ,"Яйца");
 	$menu[1][] = array("feed" , "Корм");
 	
-	if($userLevel > 0) {
-		echo "<div class=\"menu\">";
-			foreach($menu as $key => $val) {
-				foreach($val as $key2 => $val2) {
-					if($userLevel >= $key)  {
-						if("./modules/".$val2[0]."/" == $module) {
-							echo "<span>{$val2[1]}</span>";
-						}
-						else {
-							echo "<a href=\"./?mod={$val2[0]}\">{$val2[1]}</a>";
-						}
-					}
-				}
-			}
-			echo "<span class='logout'><a href='{$_SERVER['PHP_SELF']}?mod=login&exit=1'>Выход</a></span>";
-		echo "</div>";
-	}
+	
 }
 
 function checkPermission(&$e ,$userLevel, $validLevel, $showError) {

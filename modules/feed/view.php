@@ -15,7 +15,7 @@ if(checkPermission($errors ,$userLevel, 1, true)) {
 						<td><input type="text" name="count"></td>
 					</tr>
 					<tr>
-						<td colspan="2"><input id="submit" class="button" type="submit" value="Добавить"></td>
+						<td colspan="2"><input id="submit" class="a_demo_three" type="submit" value="Добавить"></td>
 					</tr>
 				</table>
 			</form>
@@ -27,7 +27,7 @@ if(checkPermission($errors ,$userLevel, 1, true)) {
 		if(isset($_POST['name'])) {
 			
 			$foodPdoStmt = $pdo->prepare("select * from food where name=?");
-			$foodPdoStmt->execute([$_POST['name']]);
+			$foodPdoStmt->execute(array($_POST['name']));
 			$foodRow = $foodPdoStmt->fetch(PDO::FETCH_LAZY);
 					
 			if($foodPdoStmt->rowCount() > 0) {
@@ -36,8 +36,8 @@ if(checkPermission($errors ,$userLevel, 1, true)) {
 					 " class='button no_margin'>Продолжить</a></div>";
 			}
 			else {
-				$foodPdoStmt = $pdo->prepare("insert into eggs(name,count) values(?,?)");
-				if($foodPdoStmt->execute([$_POST['name'], $_POST['count']])) {
+				$foodPdoStmt = $pdo->prepare("insert into food(name,count) values(?,?)");
+				if($foodPdoStmt->execute(array($_POST['name'], $_POST['count']))) {
 				?>
 				<div class="okmessage">Корм успешно закуплен!</div>
 			<?php 
@@ -48,7 +48,7 @@ if(checkPermission($errors ,$userLevel, 1, true)) {
 		if(isset($_GET['act']) && $_GET['act'] == 'accept') {
 			$foodPdoStmt = $pdo->prepare("update food set count=ifnull(count, 0)+? where name=?");
 			
-			if($foodPdoStmt->execute([$_GET['count'], $_GET['name']])) {
+			if($foodPdoStmt->execute(array($_GET['count'], $_GET['name']))) {
 			 ?>
 				<div class="okmessage">Корм успешно закуплен!</div>
 			<?php 
@@ -59,15 +59,15 @@ if(checkPermission($errors ,$userLevel, 1, true)) {
 			$flag=1;
 			foreach($_POST['id'] as $key => $val) {
 				$foodPdoStmt = $pdo->prepare("select * from food where id=?");
-				$foodPdoStmt->execute([$val]);
+				$foodPdoStmt->execute(array($val));
 				$foodRow = $foodPdoStmt->fetch(PDO::FETCH_LAZY);
 				if(($foodRow['count'] < $_POST['count'][$key]) || ($_POST['count'][$key] <= 0)) {
-					displayError(["Некорректно введено количество корма для  позиции \"{$foodRow['name']}.\""]);
+					displayError("Некорректно введено количество корма для  позиции \"{$foodRow['name']}.\"");
 				}
 				else {
 					$foodPdoStmt = $pdo->prepare("update food set count=ifnull(count, 0)-? where id=?");
 					
-					if($foodPdoStmt->execute([$_POST['count'][$key], $val])) {
+					if($foodPdoStmt->execute(array($_POST['count'][$key], $val))) {
 						echo "<div class=\"okmessage\">Позиция \"{$foodRow['name']}\" успешно списана.</div>";
 					}
 				}
@@ -80,17 +80,19 @@ if(checkPermission($errors ,$userLevel, 1, true)) {
 			$dietPdoStmt->execute();
 			if($dietPdoStmt->rowCount() > 0) { ?>
 				<div class="recomendations">
-					<table class="data">
+					<table id="large" cellspacing="0"="data">
+				<thead>
 						<caption>Рекомендации диетолога на сегодняший день</caption>
-						<tr class="header">
-							<td>Название корма</td>
-							<td>Количество</td>
+						<tr>
+							<th>Название корма</th>
+							<th>Количество</th>
 						</tr>
 					<?php while ($dietRow = $dietPdoStmt->fetch(PDO::FETCH_LAZY)) { ?>
 						<tr>
 							<td><?php echo $dietRow['name'] ?></td>
 							<td><?php echo $dietRow['count'] ?></td>
 						</tr>
+						</thead>
 					<?php } ?>
 					</table>
 				</div>
@@ -102,12 +104,14 @@ if(checkPermission($errors ,$userLevel, 1, true)) {
 				$foodPdoStmt->execute();
 				if($foodPdoStmt->rowCount() > 0) { ?>
 					<form method="post" action="<?php echo $_SERVER['PHP_SELF']."?mod=feed"; ?>">
-						<table class="data">
-							<tr class="header">
-								<td>Использовать</td>
-								<td>Название корма</td>
-								<td>Количество</td>
+						<table id="large" cellspacing="0"="data">
+				<thead>
+							<tr>
+								<th>Использовать</th>
+								<th>Название корма</th>
+								<th>Количество</th>
 							</tr>
+							</thead>
 						<?php for ($i=0;$foodRow = $foodPdoStmt->fetch(PDO::FETCH_LAZY);$i++) { ?>
 							<tr>
 								<td><input type="checkbox" name="id[<?php echo $i; ?>]" value="<?php echo $foodRow['id'] ?>"></td>
@@ -116,7 +120,7 @@ if(checkPermission($errors ,$userLevel, 1, true)) {
 							</tr>
 						<?php } ?>
 						</table>
-						<input id="submit" class="button" name="feed" type="submit" value="Покормить">
+						<input id="submit" class="a_demo_three" name="feed" type="submit" value="Покормить">
 					</form>
 					<hr>
 					<?php
@@ -127,11 +131,13 @@ if(checkPermission($errors ,$userLevel, 1, true)) {
 			$foodPdoStmt = $pdo->prepare("select * from food");
 			$foodPdoStmt->execute();
 			if($foodPdoStmt->rowCount() > 0) { ?>
-				<table class="data">
-					<tr class="header">
-						<td>Название корма</td>
-						<td>Количество</td>
+				<table id="large" cellspacing="0"="data">
+				<thead>
+					<tr>
+						<th>Название корма</th>
+						<th>Количество</th>
 					</tr>
+					</thead>
 				<?php while ($foodRow = $foodPdoStmt->fetch(PDO::FETCH_LAZY)) { ?>
 					<tr>
 						<td><?php echo $foodRow['name'] ?></td>
@@ -145,8 +151,8 @@ if(checkPermission($errors ,$userLevel, 1, true)) {
 	if($userLevel != 2) {
 	?>
 	<div class="center">
-		<a href="<?php echo $_SERVER['PHP_SELF']."?mod=feed&act=add"; ?>" class="button">Закупить корм</a>
-		<a href="<?php echo $_SERVER['PHP_SELF']."?mod=feed&act=feed"; ?>" class="button">Покормить куриц</a>
+		<a href="<?php echo $_SERVER['PHP_SELF']."?mod=feed&act=add"; ?>" class="a_demo_three">Закупить корм</a>
+		<a href="<?php echo $_SERVER['PHP_SELF']."?mod=feed&act=feed"; ?>" class="a_demo_three">Покормить куриц</a>
 	</div>
 	<?php
 	}

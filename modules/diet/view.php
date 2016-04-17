@@ -5,7 +5,7 @@ if(checkPermission($errors ,$userLevel, 2, true)) {
 	if(isset($_GET['act']) && $_GET['act'] == 'add') { 
 	?>
 		<form method="post" action="<?php echo $_SERVER['PHP_SELF']."?mod=diet"; ?>">
-			<table>
+			<table id="large" cellspacing="0">
 				<tr>
 					<td>Название</td>
 					<td><input type='text' name='name'></td>
@@ -29,7 +29,7 @@ if(checkPermission($errors ,$userLevel, 2, true)) {
 					</td>
 				</tr>
 				<tr>
-					<td colspan="2"><input id="submit" class="button" type="submit" value="Добавить"></td>
+					<td colspan="2"><input id="submit" class="a_demo_three" type="submit" value="Добавить"></td>
 				</tr>
 			</table>
 		</form>
@@ -38,7 +38,7 @@ if(checkPermission($errors ,$userLevel, 2, true)) {
 	}
 	if(isset($_POST['name'])) {
 			$dietPdoStmt = $pdo->prepare("select * from diet where day=? and name=?");
-			$dietPdoStmt->execute([$_POST['day'],$_POST['name']]);
+			$dietPdoStmt->execute(array($_POST['day'],$_POST['name']));
 					
 			if($dietPdoStmt->rowCount() > 0) {
 				echo "<div class='question_message'>Рекомендация с такой датой и названием уже существует в базе.".
@@ -47,7 +47,7 @@ if(checkPermission($errors ,$userLevel, 2, true)) {
 			}
 			else {
 				$dietPdoStmt = $pdo->prepare("insert into diet(name,count,day) values(?,?,?)");
-				if($dietPdoStmt->execute([$_POST['name'], $_POST['count'], $_POST['day']])) {
+				if($dietPdoStmt->execute(array($_POST['name'], $_POST['count'], $_POST['day']))) {
 				?>
 				<div class="okmessage">Рекомендация успешно добавлена!</div>
 			<?php 
@@ -58,7 +58,7 @@ if(checkPermission($errors ,$userLevel, 2, true)) {
 	if(isset($_GET['act']) && $_GET['act'] == 'accept') {
 		$dietPdoStmt = $pdo->prepare("update diet set count=ifnull(count, 0)+? where name=? and day=?");
 		
-		if($dietPdoStmt->execute([$_GET['count'], $_GET['name'], $_GET['day']])) {
+		if($dietPdoStmt->execute($_GET['count'], $_GET['name'], $_GET['day'])) {
 		 ?>
 			<div class="okmessage">Рекомендация успешно добавлена!</div>
 		<?php 
@@ -74,15 +74,15 @@ if(checkPermission($errors ,$userLevel, 2, true)) {
 				
 				if($flag == "c") {
 					$dietPdoStmt = $pdo->prepare("select * from diet where id=?");
-					$dietPdoStmt->execute([$val]);
+					$dietPdoStmt->execute($val);
 					$dietRow = $dietPdoStmt->fetch(PDO::FETCH_LAZY);
 					if($_POST['count'][$key] <= 0) {
-						displayError(["Некорректно введено количество корма для  позиции \"{$dietRow['name']}.\""]);
+						displayError("Некорректно введено количество корма для  позиции \"{$dietRow['name']}.\"");
 					}
 					else {
 						$dietPdoStmt = $pdo->prepare("update diet set count=?, day=? where id=?");
 						
-						if($dietPdoStmt->execute([$_POST['count'][$key], $_POST['day'][$key], $val])) {
+						if($dietPdoStmt->execute($_POST['count'][$key], $_POST['day'][$key], $val)) {
 							echo "<div class=\"okmessage\">Позиция \"{$dietRow['name']}\" успешно изменена.</div>";
 						}
 					}
@@ -90,7 +90,7 @@ if(checkPermission($errors ,$userLevel, 2, true)) {
 				elseif($flag == "d") {
 					$dietPdoStmt = $pdo->prepare("delete from diet where id=?");
 					
-					if($dietPdoStmt->execute([$val])) {
+					if($dietPdoStmt->execute(array($val))) {
 						echo "<div class=\"okmessage\">Позиция \"{$dietRow['name']}\" успешно удалена.</div>";
 					}
 				}
@@ -102,15 +102,17 @@ if(checkPermission($errors ,$userLevel, 2, true)) {
 		$dietPdoStmt = $pdo->prepare("select * from diet");
 		$dietPdoStmt->execute();
 		if($dietPdoStmt->rowCount() > 0) { ?>
-			<form method="post" action="<?php echo $_SERVER['PHP_SELF']."?mod=diet"; ?>">
-				<table class="data">
-					<tr class="header">
-						<td>Изменить</td>
-						<td>Удалить</td>
-						<td>Название корма</td>
-						<td>Количество</td>
-						<td>День</td>
+			<form method="post" action="<?php echo $_SERVER['PHP_SELF']."?mod=diet"; ?>">	
+				<table id="large" cellspacing="0"="data">
+				<thead>
+					<tr>
+						<th>Изменить</th>
+						<th>Удалить</th>
+						<th>Название корма</th>
+						<th>Количество</th>
+						<th>День</th>
 					</tr>
+					</thead>
 				<?php for ($i=0;$dietRow = $dietPdoStmt->fetch(PDO::FETCH_LAZY);$i++) { ?>
 					<tr>
 						<td><input type="radio" name="id[<?php echo $i; ?>]" value="<?php echo $dietRow['id']."c"; ?>"></td>
@@ -131,7 +133,7 @@ if(checkPermission($errors ,$userLevel, 2, true)) {
 					</tr>
 				<?php } ?>
 				</table>
-				<input id="submit" class="button" name="diet" type="submit" value="Применить">
+				<input id="submit" class="a_demo_three" name="diet" type="submit" value="Применить">
 			</form>
 			<hr>
 			<?php
@@ -142,12 +144,14 @@ if(checkPermission($errors ,$userLevel, 2, true)) {
 		$dietPdoStmt = $pdo->prepare("select * from diet");
 		$dietPdoStmt->execute();
 		if($dietPdoStmt->rowCount() > 0) { ?>
-			<table class="data">
-				<tr class="header">
-					<td>Название корма</td>
-					<td>Количество</td>
-					<td>День недели</td>
+			<table id="large" cellspacing="0">
+			<thead>
+				<tr>
+					<th>Название корма</th>
+					<th>Колличество</th>
+					<th>День недели</th>
 				</tr>
+				</thead>
 			<?php while ($dietRow = $dietPdoStmt->fetch(PDO::FETCH_LAZY)) { ?>
 				<tr>
 					<td><?php echo $dietRow['name'] ?></td>
@@ -169,9 +173,10 @@ if(checkPermission($errors ,$userLevel, 2, true)) {
 	}
 	?>
 	<div class="center">
-		<a href="<?php echo $_SERVER['PHP_SELF']."?mod=diet&act=add"; ?>" class="button">Добавить рекомендацию</a>
-		<a href="<?php echo $_SERVER['PHP_SELF']."?mod=diet&act=change"; ?>" class="button">Изменить/удалить рекомендации</a>
+		<a href="<?php echo $_SERVER['PHP_SELF']."?mod=diet&act=add"; ?>" class="a_demo_three">Добавить рекомендацию</a>
+		<a href="<?php echo $_SERVER['PHP_SELF']."?mod=diet&act=change"; ?>" class="a_demo_three">Изменить/удалить рекомендации</a>
 	</div>
 	<?php
+	
 }
 ?>

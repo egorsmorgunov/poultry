@@ -4,7 +4,7 @@ if(checkPermission($errors ,$userLevel, 99, false)) {
 	if(isset($_POST['user'])) { 
 		
 		$usersPdoStmt = $pdo->prepare("select * from users where id=?");
-		$usersPdoStmt->execute([$_POST['user']]);
+		$usersPdoStmt->execute(array($_POST['user']));
 		if($usersPdoStmt->rowCount() > 0) {
 		$UserRow = $usersPdoStmt->fetch(PDO::FETCH_LAZY);
 			
@@ -24,7 +24,7 @@ if(checkPermission($errors ,$userLevel, 99, false)) {
 						<td><input name="level" type="text"  size="30" value="<?php echo $UserRow['level']; ?>"></td>
 					</tr>
 					<tr>
-						<td colspan="2"><input id="submit" class="button" type="submit" value="Обновить"></td>
+						<td colspan="2"><input id="submit" class="a_demo_three" type="submit" value="Обновить"></td>
 					</tr>
 				</table>
 			</form>
@@ -35,7 +35,7 @@ if(checkPermission($errors ,$userLevel, 99, false)) {
 	
 	if(isset($_POST['fullname'])) { 
 		$usersPdoStmt = $pdo->prepare("update users set full_name=?, email=?, level=? where id=?");
-		if($usersPdoStmt->execute([$_POST['fullname'], $_POST['email'], $_POST['level'], $_GET['id']])) {
+		if($usersPdoStmt->execute(array($_POST['fullname'], $_POST['email'], $_POST['level'], $_GET['id']))) {
 	?>
 		<div class="okmessage">Запись успешно обновлена!</div>
 	<?php 
@@ -46,15 +46,17 @@ if(checkPermission($errors ,$userLevel, 99, false)) {
 	$usersPdoStmt->execute();
 	if($usersPdoStmt->rowCount() > 0) { ?>
 		<form method="post" action="<?php echo $_SERVER['PHP_SELF']."?mod=users"; ?>">
-			<table class="data fullwidth">
-				<tr class="header">
-					<td>Выбрать</td>
-					<td>Идентификатор</td>
-					<td>Логин</td>
-					<td>Эл. почта</td>
-					<td>ФИО</td>
-					<td>Уровень доступа</td>
+			<table id="large" cellspacing="0"="data">
+				<thead>
+				<tr>
+					<th>Выбрать</th>
+					<th>Идентификатор</th>
+					<th>Логин</th>
+					<th>Эл. почта</th>
+					<th>ФИО</th>
+					<th>Уровень доступа</th>
 				</tr>
+				</thead>
 			<?php while ($UserRow = $usersPdoStmt->fetch(PDO::FETCH_LAZY)) { ?>
 				<tr>
 					<td><input type="radio" name="user" value='<?php echo $UserRow['id'] ?>'></td>
@@ -72,7 +74,7 @@ if(checkPermission($errors ,$userLevel, 99, false)) {
 				</tr>
 			<?php } ?>
 			</table>
-			<input class="button" type="submit" value="Редактировать">
+			<input class="a_demo_three" type="submit" value="Редактировать">
 		</form>
 		<?php
 	}
