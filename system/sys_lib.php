@@ -14,45 +14,54 @@ function connectDb($host, $db, $user, $pass, $charset) {
 }
 
 function initSession(&$e,$pdo) {
-	session_start();
-	if(!isset($_SESSION['id']) && isset($_COOKIE['id'])) {
-		$stmt = $pdo->prepare("select id from users where unique_id = ?");
-		$cookie[0] = $_COOKIE['id']
-		$stmt->execute();
-		$row_count = $stmt->rowCount();
-		
-		if($row_count == 1) {
-			$resultId = $stmt->fetchColumn();
-			$_SESSION['id'] = $resultId;
-		}
-		else {
-			$e[] = "Ваши cookies не актуальны. Авторизуйтесь для доступа к сайту.";
-			setcookie("id","",time()-1, "/");
-		}
-	}
+ session_start();
+ if(!isset($_SESSION['id']) && isset($_COOKIE['id'])) {
+  $stmt = $pdo->prepare("select id from users where unique_id = ?");
+  $cookie[0] = $_COOKIE['id'];
+  $stmt->execute($cookie);
+  $row_count = $stmt->rowCount();
+  
+  if($row_count == 1) {
+   $resultId = $stmt->fetchColumn();
+   $_SESSION['id'] = $resultId;
+  }
+  else {
+   $e[] = "Ваши cookies не актуальны. Авторизуйтесь для доступа к сайту.";
+   setcookie("id","",time()-1, "/");
+  }
+ }
 }
 
-function getUserLevel($pdo) {
-	if(isset($_SESSION['id'])) {
-		$data[1] = $_SESSION['id'];
-	}
-	elseif(isset($_COOKIE['id'])) {
-		$data[1] = $_COOKIE['unique_id'];
-	}
-	else $data = false;
-	
-	if($data) {
-		$stmt = $pdo->prepare("select level from users where {$data[1]} = ?");
-		$dataa[0] = $data[0]['id'];
-		$stmt->execute($dataa);
-		$row_count = $stmt->rowCount();
-		
-		if($row_count == 1) {
-			$resultLevel = $stmt->fetchColumn();
-			return $resultLevel;
-		}
-	}
-	return 0;
+function getUserLevel($pdo)
+{
+ if(isset($_SESSION['id']))
+	 {
+  $data[1] = $_SESSION['id'];
+ }
+ elseif(isset($_COOKIE['id']))
+ {
+  $data[1] = $_COOKIE['unique_id'];
+ }
+ else $data = false;
+ 
+ 
+ if($data)
+ {
+  $stmt = $pdo->prepare('select level from users where id = :id');
+  
+  //$dataa[1] = $data[1];
+  $stmt->execute(array(':id' => $data[1]));
+  
+  $row_count = $stmt->rowCount();
+  
+  
+  if($row_count == 1) {
+   $resultLevel = $stmt->fetchColumn();
+   
+   return $resultLevel;
+  }
+ }
+ return 0;
 }
 
 function setModule($defaultModule) {
@@ -82,10 +91,10 @@ function displayError($errors) {
 }
 
 function showMenu($userLevel, $module) {
-	$menu[99][] = ["users", "Пользователи"];
-	$menu[2][] = ["diet", "Диета"];
-	$menu[1][] = ["eggs", "Яйца"];
-	$menu[1][] = ["feed", "Корм"];
+$menu[99][] = array ("users" , "Пользователи");
+	$menu[2][] = array ("diet" , "Диета");
+	$menu[1][] = array("eggs" ,"Яйца");
+	$menu[1][] = array("feed" , "Корм");
 	
 	if($userLevel > 0) {
 		echo "<div class=\"menu\">";

@@ -80,8 +80,9 @@ function isPasswordsMatch(&$e, $password1, $password2) {
 }
 
 function isLoginExists(&$e, $pdo, $login, $intent) {
+		$loginn[0] = $login;
 		$stmt = $pdo->prepare("select id from users where login = ?");
-		$stmt->execute([$login]);
+		$stmt->execute($loginn);
 		$rowCount = $stmt->rowCount();
 		
 		if($intent) {
@@ -101,36 +102,36 @@ function isLoginExists(&$e, $pdo, $login, $intent) {
 }
 
 function authorization(&$e, $pdo, $login, $password) {
-		$stmt = $pdo->prepare("select * from users where login = ? and password = ?");
-		$loginn[0] = $login;
-		$loginn[1] = md5($password);
-		$stmt->execute($loginn);
-		$rowCount = $stmt->rowCount();
-		$resultArr = $stmt->fetch(PDO::FETCH_LAZY);
-		if($rowCount != 1) {
-			$e[] = 'Неправильный логин/пароль.';
-			return false;
-		}
-		else {
-			setcookie("id",$resultArr['unique_id'],time() + 60*60*24*62, "/");
-			$_SESSION['id'] = $resultArr['id'];
-			return true;
-		}
+  $stmt = $pdo->prepare("select * from users where login = ? and password = ?");
+  $loginn[0] = $login;
+  $loginn[1] = md5($password);
+  $stmt->execute($loginn);
+  $rowCount = $stmt->rowCount();
+  $resultArr = $stmt->fetch(PDO::FETCH_LAZY);
+  if($rowCount != 1) {
+   $e[] = 'Неправильный логин/пароль.';
+   return false;
+  }
+  else {
+   setcookie("id",$resultArr['unique_id'],time() + 60*60*24*62, "/");
+   $_SESSION['id'] = $resultArr['id'];
+   return true;
+  }
 }
 
 function registration(&$e, $pdo, $login, $password, $email, $fullname) {
-		$loginn[0] = $login;
-		$loginn[1] = md5($password);
-		$loginn[2] = $email;
-		$loginn[3] = $fullname;
-		$loginn[4] = 0;
-		$loginn[5] = md5($_SERVER['REMOTE_ADDR'].$_SERVER['HTTP_USER_AGENT'].mktime());
+  $loginn[0] = $login;
+  $loginn[1] = md5($password);
+  $loginn[2] = $email;
+  $loginn[3] = $fullname;
+  $loginn[4] = 0;
+  $loginn[5] = md5($_SERVER['REMOTE_ADDR'].$_SERVER['HTTP_USER_AGENT'].mktime());
 
-		$stmt = $pdo->prepare("insert into users(login, password, email, full_name,".
-							  "level, unique_id) values(?, ?, ?, ?, ?, ?)");
-		$stmt->execute($loginn);
+  $stmt = $pdo->prepare("insert into users(login, password, email, full_name,".
+         "level, unique_id) values(?, ?, ?, ?, ?, ?)");
+  $stmt->execute($loginn);
 
-		setcookie("id",$unique_id,time() + 60*60*24*62, "/");
+  setcookie("id",$unique_id,time() + 60*60*24*62, "/");
 }
 
 ?>

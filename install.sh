@@ -23,7 +23,7 @@ I=$( mkdir /home/poultry 2>/dev/null)
 					git init
 					git pull https://github.com/egorsmorgunov/poultry.git
 					echo "git was installed nice and pulled"
-					#если не установилась то выдать ошибку и прекратить скрипт  
+					#если не установилась то выдать ошибку и прекратить скрипт
 				else
 					echo "git: network down"
 					exit 1
@@ -42,7 +42,7 @@ I=$( mkdir /home/poultry 2>/dev/null)
 			Check_bd_name_and_load_dump() 
 			{ 
 				#1.3.4.пробуем создать базу данных poultry
-				I=$( mysql -u poultry -ppoultry -e "create database poultry;" 2>&1)
+				I=$( mysql -u poultry -ppoultry -e "create database poultry_farm;" 2>&1)
 				
 				if [ -n "$I" ]
 					then
@@ -84,16 +84,27 @@ I=$( mkdir /home/poultry 2>/dev/null)
 					#проверить существование базы данных и заливка
 					Check_bd_name_and_load_dump
 			fi
+			
+		#если не установлена MySQL
 		else
 			#попытаться установить в тихом режиме
 			I=`apt-get -y -qq install mysql-server 2>/dev/null`
-			#если установилась, то запустить и проверить юзера
+			#если установилась, то установить юзера
 			if [ -n "$I" ]
 				then
-					#проверить существование пользователя 
-					echo "mysql was install nice"
-					#если не установилась то выдать ошибку и прекратить скрипт
+					I=$( mysql -u root -pfourthage -e "GRANT SELECT, INSERT, UPDATE, DELETE, LOCK TABLES, SHOW DATABASES, CREATE, DROP, FILE, INDEX, ALTER, CREATE TEMPORARY TABLES, EXECUTE, CREATE VIEW, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE, EVENT, TRIGGER ON *.* TO 'poultry'@'localhost' IDENTIFIED BY 'poultry';" 2>&1)
+					if [ -n "$I" ]
+						then
+						#пользователя не удалось создать
+							echo "can not create mysql-user poultry"
+							exit 4
+						else
+							#проверить существование базы данных и заливка
+							echo "mysql-user poultry created"
+							Check_bd_name_and_load_dump
+					fi
 				else
+					#если не установилась то выдать ошибку и прекратить скрипт
 					echo "mysql: network down"
 					exit 2
 			fi	
