@@ -51,7 +51,7 @@ I=$( mkdir /home/poultry 2>/dev/null)
 						exit 3
 					else
 						#1.3.4.1. бд не было - пробуем залить
-						I=$( mysql -u poultry -ppoultry -e "use poultry;source /home/poultry/poultry_farm.sql;" 2>&1)
+						I=$( mysql -u poultry -ppoultry -e "use poultry_farm;source /home/poultry/poultry_farm.sql;" 2>&1)
 						#echo "$I"
 						if [ -n "$I" ]
 							then
