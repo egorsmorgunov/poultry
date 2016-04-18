@@ -16,12 +16,12 @@ include_once $module."logic.php";
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300" type="text/css" />
+		
 		<link rel="stylesheet" type="text/css" href="./client_side/style.css" >
 		<style type="text/css">@import "assets/css/default.css";</style>
 		<title><?php echo $siteTitle; ?></title>
 			<script src="js/jquery-2.1.4.js"></script>
-			<script type="text/javascript" src="../jquery.tablesorter.js"></script>
+			<script type="text/javascript" src="jquery.tablesorter.js"></script>
 		<script src="js/modernizr.js"></script> <!-- Modernizr -->
 		<script type="text/javascript">
 	
