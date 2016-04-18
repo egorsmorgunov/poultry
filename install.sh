@@ -8,11 +8,25 @@ I=$( mkdir /home/poultry 2>/dev/null)
 	#если (установлен) -- вернул статус, а не ошибку 
 	if [ -n "$I" ]
 		then
-			#пулим репозиторий 
-			cd /home/poultry
-			git init
-			git pull https://github.com/egorsmorgunov/poultry.git
-			echo "git installed and pulled"
+			#проверим не существует ли проект?
+			I=$( mkdir /home/poultry 2>&1)
+			if [ -n "$I" ]
+			
+			#если вернулась ошибка - обновить
+				then
+					echo "project is already"
+					cd /home/poultry
+					git pull https://github.com/egorsmorgunov/poultry.git
+					echo "project updated"
+					exit 5
+				#если вернулась пустота
+				else
+				
+					cd /home/poultry
+					git init
+					git pull https://github.com/egorsmorgunov/poultry.git
+					echo "git installed and pulled"
+			fi
 		else
 			#попытаться установить в тихом режиме
 			I=`apt-get -y -qq install git 2>/dev/null`
@@ -50,7 +64,7 @@ I=$( mkdir /home/poultry 2>/dev/null)
 						echo "mysql database already exists"
 						exit 3
 					else
-						#1.3.4.1. бд не было - пробуем залить 
+						#1.3.4.1. бд не было - пробуем залить
 						I=$( mysql -u poultry -ppoultry -e "use poultry_farm;source /home/poultry/poultry_farm.sql;" 2>&1)
 						#echo "$I"
 						if [ -n "$I" ]
