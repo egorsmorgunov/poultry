@@ -2,7 +2,7 @@
 
 //database parameters
 $dbHost			= "localhost";
-$dbName			= "poultry";
+$dbName			= "poultry_farm";
 $dbUser			= "poultry";
 $dbPassword		= "poultry";
 $dbCharset		= "UTF8";
