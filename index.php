@@ -53,7 +53,7 @@ include_once $module."logic.php";
                 <li id="about"><a href="./?mod=diet">Диета</a></li>
                 <li id="services"><a href="./?mod=eggs">Яйца</a></li>
                 <li id="contact"><a href="./?mod=feed">Корм</a></li>
-				<li id="contact"><a href="/index.php?mod=login&amp;exit=1">Выход</a></li>
+				<li id="contact"><a href="index.php?mod=login&amp;exit=1">Выход</a></li>
             </ul>
         </nav>
 
