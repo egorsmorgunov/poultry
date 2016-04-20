@@ -90,13 +90,33 @@ function displayError($errors) {
 	}
 }
 
+	
 function showMenu($userLevel, $module) {
 $menu[99][] = array ("users" , "Пользователи");
-	$menu[2][] = array ("diet" , "Диета");
-	$menu[1][] = array("eggs" ,"Яйца");
-	$menu[1][] = array("feed" , "Корм");
-	
-	
+$menu[2][] = array ("diet" , "Диета");
+$menu[1][] = array("eggs" ,"Яйца");
+$menu[1][] = array("feed" , "Корм");
+
+if (($userLevel > 0) && (isset($_SESSION['id']) && isset($_COOKIE['id'])))
+{foreach($menu as $key => $val)
+{
+foreach($val as $key2 => $val2)
+{
+if($userLevel >= $key)
+{
+if("./modules/".$val2[0]."/" == $module)
+{
+echo "<li id=\"about\"><a href=\"./?mod={$val2[0]}\".>{$val2[1]}</a></li>";
+}
+else{
+echo "<li id=\"about\"><a href=\"./?mod={$val2[0]}\".>{$val2[1]}</a></li>";
+}
+}
+}
+}
+echo "<li id=\"contact\"><a href=\"index.php?mod=login&amp;exit=1\">Выход</a></li>";
+
+}
 }
 
 function checkPermission(&$e ,$userLevel, $validLevel, $showError) {

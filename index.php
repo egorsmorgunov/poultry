@@ -47,21 +47,17 @@ include_once $module."logic.php";
 	</div>
 			</header>
 			<div id="main">
-			 <nav>
-            <ul class="fancyNav">
-                <li id="news"><a href="./?mod=users">Пользователи</a></li>
-                <li id="about"><a href="./?mod=diet">Диета</a></li>
-                <li id="services"><a href="./?mod=eggs">Яйца</a></li>
-                <li id="contact"><a href="./?mod=feed">Корм</a></li>
-				<li id="contact"><a href="index.php?mod=login&amp;exit=1">Выход</a></li>
-            </ul>
-        </nav>
-
+			<nav>
+			<ul class="fancyNav">
+		
 				<?php
 				showMenu($userLevel, $module);
 				displayError($errors);
 				include_once $module."view.php"; 
 				?>
+			</ul>
+			</nav>
+			</div>
 			</div>
 			<div id="container">Информационная система управления птицефабрикой, гр. 1532K@2016 V.2.0</div>
 		</div>

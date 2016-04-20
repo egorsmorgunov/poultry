@@ -37,6 +37,19 @@ if(checkPermission($errors ,$userLevel, 2, true)) {
 	<?php 
 	}
 	if(isset($_POST['name'])) {
+   if(empty($_POST['name']))
+	 {
+	 	
+	 	echo   "<div class='error'>Поле название корма было не заполнено</div>";
+	 }
+	 else if(empty($_POST['count']))
+	 {
+	 	
+	 	echo   "<div class='error'>Поле  количество было не заполнено</div>";
+	 }
+	 else
+	 {
+		
 			$dietPdoStmt = $pdo->prepare("select * from diet where day=? and name=?");
 			$dietPdoStmt->execute(array($_POST['day'],$_POST['name']));
 					
@@ -54,7 +67,7 @@ if(checkPermission($errors ,$userLevel, 2, true)) {
 			}
 		}
 	}
-	
+	}
 	if(isset($_GET['act']) && $_GET['act'] == 'accept') {
 		$dietPdoStmt = $pdo->prepare("update diet set count=ifnull(count, 0)+? where name=? and day=?");
 		

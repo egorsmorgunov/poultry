@@ -24,8 +24,20 @@ if(checkPermission($errors ,$userLevel, 1, true)) {
 		}
 
 		
-		if(isset($_POST['name'])) {
+	if(isset($_POST['name'])) {
 			
+	 if(empty($_POST['name']))
+	 {
+	 	
+	 	echo   "<div class='error'>Поле название корма было не заполнено</div>";
+	 }
+	 else if(empty($_POST['count']))
+	 {
+	 	
+	 	echo   "<div class='error'>Поле  количество было не заполнено</div>";
+	 }
+	 else
+	 {
 			$foodPdoStmt = $pdo->prepare("select * from food where name=?");
 			$foodPdoStmt->execute(array($_POST['name']));
 			$foodRow = $foodPdoStmt->fetch(PDO::FETCH_LAZY);
@@ -41,8 +53,10 @@ if(checkPermission($errors ,$userLevel, 1, true)) {
 				?>
 				<div class="okmessage">Корм успешно закуплен!</div>
 			<?php 
-				}
+				
 			}
+		}
+		}
 		}
 		
 		if(isset($_GET['act']) && $_GET['act'] == 'accept') {
