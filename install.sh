@@ -1,25 +1,25 @@
 #!/bin/bash
-#1.1.создаём папку проекта
+#1.1.СЃРѕР·РґР°С‘Рј РїР°РїРєСѓ РїСЂРѕРµРєС‚Р°
 
-I=$( mkdir /home/poultry 2>/dev/null)
+#I=$( mkdir /home/poultry 2>/dev/null) #РЅРµ РЅР°РґРѕ (РѕС€РёР±РєРё)
 
-	#1.2.Все дела с  git
+	#1.2.Р’СЃРµ РґРµР»Р° СЃ  git
 	I=`dpkg -s git 2>/dev/null | grep "Status"`
-	#если (установлен) -- вернул статус, а не ошибку 
+	#РµСЃР»Рё (СѓСЃС‚Р°РЅРѕРІР»РµРЅ) -- РІРµСЂРЅСѓР» СЃС‚Р°С‚СѓСЃ, Р° РЅРµ РѕС€РёР±РєСѓ 
 	if [ -n "$I" ]
 		then
-			#проверим не существует ли проект?
+			#РїСЂРѕРІРµСЂРёРј РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚ Р»Рё РїСЂРѕРµРєС‚?
 			I=$( mkdir /home/poultry 2>&1)
 			if [ -n "$I" ]
 			
-			#если вернулась ошибка - обновить
+			#РµСЃР»Рё РІРµСЂРЅСѓР»Р°СЃСЊ РѕС€РёР±РєР° - РѕР±РЅРѕРІРёС‚СЊ
 				then
 					echo "project is already"
 					cd /home/poultry
 					git pull https://github.com/egorsmorgunov/poultry.git
 					echo "project updated"
 					exit 5
-				#если вернулась пустота
+				#РµСЃР»Рё РІРµСЂРЅСѓР»Р°СЃСЊ РїСѓСЃС‚РѕС‚Р°
 				else
 				
 					cd /home/poultry
@@ -28,43 +28,43 @@ I=$( mkdir /home/poultry 2>/dev/null)
 					echo "git installed and pulled"
 			fi
 		else
-			#попытаться установить в тихом режиме
+			#РїРѕРїС‹С‚Р°С‚СЊСЃСЏ СѓСЃС‚Р°РЅРѕРІРёС‚СЊ РІ С‚РёС…РѕРј СЂРµР¶РёРјРµ
 			I=`apt-get -y -qq install git 2>/dev/null`
-			#если установилась то запустить гит команды
+			#РµСЃР»Рё СѓСЃС‚Р°РЅРѕРІРёР»Р°СЃСЊ С‚Рѕ Р·Р°РїСѓСЃС‚РёС‚СЊ РіРёС‚ РєРѕРјР°РЅРґС‹
 			if [ -n "$I" ]
 				then
 					cd /home/poultry
 					git init
 					git pull https://github.com/egorsmorgunov/poultry.git
 					echo "git was installed nice and pulled"
-					#если не установилась то выдать ошибку и прекратить скрипт
+					#РµСЃР»Рё РЅРµ СѓСЃС‚Р°РЅРѕРІРёР»Р°СЃСЊ С‚Рѕ РІС‹РґР°С‚СЊ РѕС€РёР±РєСѓ Рё РїСЂРµРєСЂР°С‚РёС‚СЊ СЃРєСЂРёРїС‚
 				else
 					echo "git: network down"
 					exit 1
 			fi	
 	fi
-	#1.3.Все дела с mysql
+	#1.3.Р’СЃРµ РґРµР»Р° СЃ mysql
 	I=`dpkg -s mysql-server 2>/dev/null | grep "Status"`
-	#если (установлен) -- вернул статус, а не ошибку 
+	#РµСЃР»Рё (СѓСЃС‚Р°РЅРѕРІР»РµРЅ) -- РІРµСЂРЅСѓР» СЃС‚Р°С‚СѓСЃ, Р° РЅРµ РѕС€РёР±РєСѓ 
 	if [ -n "$I" ]
 		then
 			echo "mysql already install"
-			#проверить существование пользователя 
-			#1.3.1. пробуем зайти под юзером
+			#РїСЂРѕРІРµСЂРёС‚СЊ СЃСѓС‰РµСЃС‚РІРѕРІР°РЅРёРµ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ 
+			#1.3.1. РїСЂРѕР±СѓРµРј Р·Р°Р№С‚Рё РїРѕРґ СЋР·РµСЂРѕРј
 			I=$( mysql -u poultry -ppoultry -e "" 2>&1)
 			#echo "$I"
 			Check_bd_name_and_load_dump() 
 			{ 
-				#1.3.4.пробуем создать базу данных poultry
+				#1.3.4.РїСЂРѕР±СѓРµРј СЃРѕР·РґР°С‚СЊ Р±Р°Р·Сѓ РґР°РЅРЅС‹С… poultry
 				I=$( mysql -u poultry -ppoultry -e "create database poultry_farm;" 2>&1)
 				
 				if [ -n "$I" ]
 					then
-						#1.3.4.2. бд существует - прекратить выполнение
+						#1.3.4.2. Р±Рґ СЃСѓС‰РµСЃС‚РІСѓРµС‚ - РїСЂРµРєСЂР°С‚РёС‚СЊ РІС‹РїРѕР»РЅРµРЅРёРµ
 						echo "mysql database already exists"
 						exit 3
 					else
-						#1.3.4.1. бд не было - пробуем залить
+						#1.3.4.1. Р±Рґ РЅРµ Р±С‹Р»Рѕ - РїСЂРѕР±СѓРµРј Р·Р°Р»РёС‚СЊ
 						I=$( mysql -u poultry -ppoultry -e "use poultry_farm;source /home/poultry/poultry_farm.sql;" 2>&1)
 						#echo "$I"
 						if [ -n "$I" ]
@@ -77,48 +77,48 @@ I=$( mkdir /home/poultry 2>/dev/null)
 			}
 			if [ -n "$I" ]
 				then
-					#если юзера нет - создать 1.3.1.
+					#РµСЃР»Рё СЋР·РµСЂР° РЅРµС‚ - СЃРѕР·РґР°С‚СЊ 1.3.1.
 					echo "mysql-user does not exist"
 					I=$( mysql -u root -pfourthage -e "GRANT SELECT, INSERT, UPDATE, DELETE, LOCK TABLES, SHOW DATABASES, CREATE, DROP, FILE, INDEX, ALTER, CREATE TEMPORARY TABLES, EXECUTE, CREATE VIEW, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE, EVENT, TRIGGER ON *.* TO 'poultry'@'localhost' IDENTIFIED BY 'poultry';" 2>&1)
 					
 					#echo "$I"
 					if [ -n "$I" ]
 						then
-						#пользователя не удалось создать
+						#РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РЅРµ СѓРґР°Р»РѕСЃСЊ СЃРѕР·РґР°С‚СЊ
 							echo "can not create mysql-user poultry"
 							exit 4
 						else
-							#проверить существование базы данных и заливка
+							#РїСЂРѕРІРµСЂРёС‚СЊ СЃСѓС‰РµСЃС‚РІРѕРІР°РЅРёРµ Р±Р°Р·С‹ РґР°РЅРЅС‹С… Рё Р·Р°Р»РёРІРєР°
 							echo "mysql-user poultry created"
 							Check_bd_name_and_load_dump
 					fi
 				else
-					#если такой юзер есть
+					#РµСЃР»Рё С‚Р°РєРѕР№ СЋР·РµСЂ РµСЃС‚СЊ
 					echo "mysql user already exists"
-					#проверить существование базы данных и заливка
+					#РїСЂРѕРІРµСЂРёС‚СЊ СЃСѓС‰РµСЃС‚РІРѕРІР°РЅРёРµ Р±Р°Р·С‹ РґР°РЅРЅС‹С… Рё Р·Р°Р»РёРІРєР°
 					Check_bd_name_and_load_dump
 			fi
 			
-		#если не установлена MySQL
+		#РµСЃР»Рё РЅРµ СѓСЃС‚Р°РЅРѕРІР»РµРЅР° MySQL
 		else
-			#попытаться установить в тихом режиме
+			#РїРѕРїС‹С‚Р°С‚СЊСЃСЏ СѓСЃС‚Р°РЅРѕРІРёС‚СЊ РІ С‚РёС…РѕРј СЂРµР¶РёРјРµ
 			I=`apt-get -y -qq install mysql-server 2>/dev/null`
-			#если установилась, то установить юзера
+			#РµСЃР»Рё СѓСЃС‚Р°РЅРѕРІРёР»Р°СЃСЊ, С‚Рѕ СѓСЃС‚Р°РЅРѕРІРёС‚СЊ СЋР·РµСЂР°
 			if [ -n "$I" ]
 				then
 					I=$( mysql -u root -pfourthage -e "GRANT SELECT, INSERT, UPDATE, DELETE, LOCK TABLES, SHOW DATABASES, CREATE, DROP, FILE, INDEX, ALTER, CREATE TEMPORARY TABLES, EXECUTE, CREATE VIEW, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE, EVENT, TRIGGER ON *.* TO 'poultry'@'localhost' IDENTIFIED BY 'poultry';" 2>&1)
 					if [ -n "$I" ]
 						then
-						#пользователя не удалось создать
+						#РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РЅРµ СѓРґР°Р»РѕСЃСЊ СЃРѕР·РґР°С‚СЊ
 							echo "can not create mysql-user poultry"
 							exit 4
 						else
-							#проверить существование базы данных и заливка
+							#РїСЂРѕРІРµСЂРёС‚СЊ СЃСѓС‰РµСЃС‚РІРѕРІР°РЅРёРµ Р±Р°Р·С‹ РґР°РЅРЅС‹С… Рё Р·Р°Р»РёРІРєР°
 							echo "mysql-user poultry created"
 							Check_bd_name_and_load_dump
 					fi
 				else
-					#если не установилась то выдать ошибку и прекратить скрипт
+					#РµСЃР»Рё РЅРµ СѓСЃС‚Р°РЅРѕРІРёР»Р°СЃСЊ С‚Рѕ РІС‹РґР°С‚СЊ РѕС€РёР±РєСѓ Рё РїСЂРµРєСЂР°С‚РёС‚СЊ СЃРєСЂРёРїС‚
 					echo "mysql: network down"
 					exit 2
 			fi	
